@@ -25,12 +25,18 @@ export const signup = async (req, res) => {
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: false, // set to true in production
+    secure: false,
     sameSite: "Lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
-  res.status(201).json({ accessToken });
+  const { password: _, ...userWithoutPassword } = newUser;
+
+  res.status(201).json({
+    message: "User created",
+    accessToken,
+    user: userWithoutPassword,
+  });
 };
 
 export const signin = async (req, res) => {
@@ -52,7 +58,13 @@ export const signin = async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
-  res.status(200).json({ accessToken });
+  const { password: _, ...userWithoutPassword } = user;
+
+  res.status(200).json({
+    message: "Signed in successfully",
+    accessToken,
+    user: userWithoutPassword,
+  });
 };
 
 export const logout = (req, res) => {
